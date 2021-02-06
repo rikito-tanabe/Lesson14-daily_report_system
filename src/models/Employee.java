@@ -18,8 +18,8 @@ import javax.persistence.Table;
             query = "SELECT e FROM Employee AS e ORDER BY e.id DESC"
             ),
     @NamedQuery(
-            name = "getEmployeeCount",
-            query = "SELECT COUNT(e) FROM Employee as e"
+            name = "getEmployeesCount",
+            query = "SELECT COUNT(e) FROM Employee AS e"
             ),
     @NamedQuery(
             name = "checkRegisteredCode",
