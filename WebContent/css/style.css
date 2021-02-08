@@ -100,3 +100,7 @@ tr.row1 {
 tr.row0 {
     background-clor: #ffffff;
 }
+
+select{
+    heigth: 30px;
+}
