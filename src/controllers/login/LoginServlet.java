@@ -27,7 +27,6 @@ public class LoginServlet extends HttpServlet {
      */
     public LoginServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -36,9 +35,9 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("_token", request.getSession().getId());
         request.setAttribute("hasError", false);
-        if(request.getSession().getAttribute("flush") != null){
-                request.setAttribute("flush", request.getSession().getAttribute("flush"));
-                request.getSession().removeAttribute("flush");
+        if(request.getSession().getAttribute("flush") != null) {
+            request.setAttribute("flush", request.getSession().getAttribute("flush"));
+            request.getSession().removeAttribute("flush");
         }
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/login/login.jsp");
@@ -49,48 +48,47 @@ public class LoginServlet extends HttpServlet {
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Boolean check_result = false;
+    Boolean check_result = false;
 
-        String code = request.getParameter("code");
-        String plain_pass = request.getParameter("passward");
+    String code = request.getParameter("code");
+    String plain_pass = request.getParameter("password");
 
-        Employee e = null;
+    Employee e = null;
 
-        if(code != null && !code.equals("") && plain_pass != null && !plain_pass.equals("")){
-            EntityManager em = DBUtil.createEntityManager();
+    if(code != null && !code.equals("") && plain_pass != null && !plain_pass.equals("")) {
+        EntityManager em = DBUtil.createEntityManager();
 
-            String password = EncryptUtil.getPasswordEncrypt(
-                    plain_pass,
-                    (String)this.getServletContext().getAttribute("pepper")
-                    );
+        String password = EncryptUtil.getPasswordEncrypt(
+                plain_pass,
+                (String)this.getServletContext().getAttribute("pepper")
+                );
 
+        try {
+            e = em.createNamedQuery("checkLoginCodeAndPassword", Employee.class)
+                  .setParameter("code", code)
+                  .setParameter("pass", password)
+                  .getSingleResult();
+        } catch(NoResultException ex) {}
 
-            try{
-                e = em.createNamedQuery("checkLoginCodeAndPassword", Employee.class)
-                        .setParameter("code", code)
-                        .setParameter("pass", password)
-                        .getSingleResult();
-            }catch(NoResultException ex){}
+        em.close();
 
-            em.close();
-
-            if(e != null){
-                check_result = true;
-            }
+        if(e != null) {
+            check_result = true;
         }
+    }
 
-        if(!check_result){
-            request.setAttribute("_token", request.getSession().getId());
-            request.setAttribute("hasError", true);
-            request.setAttribute("code", code);
+    if(!check_result) {
+        request.setAttribute("_token", request.getSession().getId());
+        request.setAttribute("hasError", true);
+        request.setAttribute("code", code);
 
-            RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/views/login/login.jsp");
-            rd.forward(request, response);
-        }else{
-            request.getSession().setAttribute("login_employee", e);
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/login/login.jsp");
+        rd.forward(request, response);
+    } else {
+        request.getSession().setAttribute("login_employee", e);
 
-            request.getSession().setAttribute("flush", "ログインしました。");
-            response.sendRedirect(request.getContextPath() + "/");
+        request.getSession().setAttribute("flush", "ログインしました。");
+        response.sendRedirect(request.getContextPath() + "/");
         }
     }
 
