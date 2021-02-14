@@ -38,7 +38,7 @@ public class Report {
     private Employee employee;
 
     @Column(name = "report_date", nullable = false)
-    private Date repotr_date;
+    private Date report_date;
 
     @Column(name = "title", length = 255, nullable = false)
     private String title;
@@ -69,12 +69,12 @@ public class Report {
         this.employee = employee;
     }
 
-    public Date getRepotr_date() {
-        return repotr_date;
+    public Date getReport_date() {
+        return report_date;
     }
 
-    public void setRepotr_date(Date repotr_date) {
-        this.repotr_date = repotr_date;
+    public void setReport_date(Date report_date) {
+        this.report_date = report_date;
     }
 
     public String getTitle() {
