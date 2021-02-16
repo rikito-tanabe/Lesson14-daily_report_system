@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import models.Employee;
 import models.Report;
-import models.validators.ReportValidator;
+import models.validators.ReportVlidator;
 import utils.DBUtil;
 
 /**
@@ -58,7 +58,7 @@ public class ReportCreateServlet extends HttpServlet {
             r.setCreated_at(currentTime);
             r.setUpdated_at(currentTime);
 
-            List<String> errors = ReportValidator.validate(r);
+            List<String> errors = ReportVlidator.validate(r);
             if(errors.size() > 0) {
                 em.close();
 
